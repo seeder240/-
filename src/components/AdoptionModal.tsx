@@ -240,16 +240,6 @@ export function AdoptionModal({
                 Підготувати заявку в WhatsApp
               </button>
 
-              <div className="pt-2 flex items-center justify-center gap-2 text-[13px] text-[#636059]">
-                <Phone className="w-3.5 h-3.5 text-[#2F6B4F]" aria-hidden="true" />
-                <span>Або телефонуйте щодня з 10:00 до 19:00:</span>
-                <a
-                  href="tel:+380674128930"
-                  className="font-semibold text-[#1F1E1C] hover:text-[#2F6B4F] tabular-nums"
-                >
-                  +38 (067) 412-89-30
-                </a>
-              </div>
             </form>
           </>
         )}
