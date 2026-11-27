@@ -1,0 +1,6 @@
+{
+  "name": "Теплий Дім — Притулок для тварин",
+  "description": "Каталог домашніх улюбленців із притулку «Теплий Дім». Оберіть вірного друга та подаруйте йому дім.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
