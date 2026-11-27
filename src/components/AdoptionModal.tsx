@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useState } from 'react';
-import { X, CheckCircle2, Phone } from 'lucide-react';
+import { X, CheckCircle2 } from 'lucide-react';
 import { PETS, Pet } from '../data/pets';
 
 interface AdoptionModalProps {
@@ -65,10 +65,10 @@ export function AdoptionModal({
       'Тварина: ' + (selectedPet ? selectedPet.name + ' (' + selectedPet.speciesLabel + ')' : 'Порадьте улюбленця'),
       message.trim() ? 'Коментар: ' + message.trim() : '',
     ].filter(Boolean).join('\n');
-    const whatsappUrl = 'https://wa.me/380674128930?text=' + encodeURIComponent(application);
+    const whatsappUrl = 'https://wa.me/?text=' + encodeURIComponent(application);
     const whatsappWindow = window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
     if (!whatsappWindow) {
-      setError('Браузер заблокував відкриття WhatsApp. Дозвольте спливаючі вікна або зателефонуйте за номером нижче.');
+      setError('Браузер заблокував відкриття WhatsApp. Дозвольте спливаючі вікна або відкрийте WhatsApp вручну й вставте підготовлений текст.');
       return;
     }
     setSubmitted(true);
@@ -117,17 +117,8 @@ export function AdoptionModal({
               Заявка готова до надсилання
             </h3>
             <p className="mt-3 text-[15px] leading-[1.65] text-[#524F49]">
-              Дякуємо, {fullName.trim()}! Ми відкрили WhatsApp із підготовленим повідомленням. Перевірте його та натисніть «Надіслати», щоб заявка справді надійшла до притулку.
+              Дякуємо, {fullName.trim()}! Ми відкрили WhatsApp із підготовленим повідомленням. Виберіть потрібний чат, перевірте текст і натисніть «Надіслати», щоб заявка справді надійшла.
             </p>
-            <div className="mt-6 p-4 bg-[#F3F1EC] border border-[#E6E2D8] rounded-xl text-sm text-[#524F49]">
-              Якщо хочете зателефонувати прямо зараз:{' '}
-              <a
-                href="tel:+380674128930"
-                className="font-semibold text-[#2F6B4F] hover:underline tabular-nums"
-              >
-                +38 (067) 412-89-30
-              </a>
-            </div>
             <button
               type="button"
               onClick={resetAndClose}
@@ -148,7 +139,7 @@ export function AdoptionModal({
               Забрати додому
             </h3>
             <p className="mt-2 text-[14px] leading-[1.6] text-[#524F49]">
-              Залиште контакти — ми перетелефонуємо або напишемо, щоб запросити вас на знайомство та відповісти на всі запитання.
+              Заповніть форму — ми підготуємо повідомлення для WhatsApp. Ви самі виберете чат і надішлете його.
             </p>
 
             <form onSubmit={handleSubmit} noValidate className="mt-6 space-y-4">
@@ -216,7 +207,7 @@ export function AdoptionModal({
                 </span>
                 <p className="rounded-xl border border-[#E6E2D8] bg-white px-3.5 py-3 text-sm text-[#524F49]">
                   WhatsApp відкриється з готовим текстом. Заявка буде надіслана лише після вашого підтвердження в месенджері.
-                </p>v>
+                </p>
               </div>
 
               <div>
