@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useState } from 'react';
-import { X, CheckCircle2, Phone } from 'lucide-react';
+import { X, CheckCircle2 } from 'lucide-react';
 import { PETS, Pet } from '../data/pets';
 
 interface AdoptionModalProps {
@@ -16,7 +16,7 @@ export function AdoptionModal({
   const [selectedPetId, setSelectedPetId] = useState<string>('');
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
-  const [contactChannel, setContactChannel] = useState<'phone' | 'telegram' | 'viber'>('phone');
+  
   const [message, setMessage] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
@@ -52,12 +52,25 @@ export function AdoptionModal({
       return;
     }
 
-    if (digitsCount < 9) {
-      setError('Будь ласка, вкажіть коректний номер телефону для зв’язку.');
+    if (digitsCount < 10 || digitsCount > 15) {
+      setError('Будь ласка, вкажіть номер телефону з 10–15 цифр.');
       return;
     }
 
     setError(null);
+    const application = [
+      'Вітаю! Хочу дізнатися про прилаштування тварини.',
+      'Ім’я: ' + trimmedName,
+      'Телефон: ' + phone.trim(),
+      'Тварина: ' + (selectedPet ? selectedPet.name + ' (' + selectedPet.speciesLabel + ')' : 'Порадьте улюбленця'),
+      message.trim() ? 'Коментар: ' + message.trim() : '',
+    ].filter(Boolean).join('\n');
+    const whatsappUrl = 'https://wa.me/?text=' + encodeURIComponent(application);
+    const whatsappWindow = window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+    if (!whatsappWindow) {
+      setError('Браузер заблокував відкриття WhatsApp. Дозвольте спливаючі вікна або відкрийте WhatsApp вручну й вставте підготовлений текст.');
+      return;
+    }
     setSubmitted(true);
   };
 
@@ -101,23 +114,11 @@ export function AdoptionModal({
               id="adoption-modal-title"
               className="font-serif text-2xl font-semibold text-[#1F1E1C]"
             >
-              Заявку отримано з теплом
+              Заявка готова до надсилання
             </h3>
             <p className="mt-3 text-[15px] leading-[1.65] text-[#524F49]">
-              Дякуємо, {fullName.trim()}!{' '}
-              {selectedPet
-                ? `Координатор притулку зв’яжеться з вами найближчим часом, щоб домовитись про знайомство з ${selectedPet.name}.`
-                : 'Координатор притулку зв’яжеться з вами найближчим часом і допоможе обрати найкращого друга.'}
+              Дякуємо, {fullName.trim()}! Ми відкрили WhatsApp із підготовленим повідомленням. Виберіть потрібний чат, перевірте текст і натисніть «Надіслати», щоб заявка справді надійшла.
             </p>
-            <div className="mt-6 p-4 bg-[#F3F1EC] border border-[#E6E2D8] rounded-xl text-sm text-[#524F49]">
-              Якщо хочете зателефонувати прямо зараз:{' '}
-              <a
-                href="tel:+380674128930"
-                className="font-semibold text-[#2F6B4F] hover:underline tabular-nums"
-              >
-                +38 (067) 412-89-30
-              </a>
-            </div>
             <button
               type="button"
               onClick={resetAndClose}
@@ -138,7 +139,7 @@ export function AdoptionModal({
               Забрати додому
             </h3>
             <p className="mt-2 text-[14px] leading-[1.6] text-[#524F49]">
-              Залиште контакти — ми перетелефонуємо або напишемо, щоб запросити вас на знайомство та відповісти на всі запитання.
+              Заповніть форму — ми підготуємо повідомлення для WhatsApp. Ви самі виберете чат і надішлете його.
             </p>
 
             <form onSubmit={handleSubmit} noValidate className="mt-6 space-y-4">
@@ -202,34 +203,11 @@ export function AdoptionModal({
 
               <div>
                 <span className="block text-[13px] font-medium text-[#1F1E1C] mb-1.5">
-                  Зручний спосіб зв’язку
+                  Надсилання заявки
                 </span>
-                <div className="grid grid-cols-3 gap-2">
-                  {(
-                    [
-                      { id: 'phone', label: 'Дзвінок' },
-                      { id: 'telegram', label: 'Telegram' },
-                      { id: 'viber', label: 'Viber' },
-                    ] as const
-                  ).map((item) => {
-                    const active = contactChannel === item.id;
-                    return (
-                      <button
-                        key={item.id}
-                        type="button"
-                        onClick={() => setContactChannel(item.id)}
-                        aria-pressed={active}
-                        className={`py-2.5 min-h-[42px] text-xs font-medium rounded-xl border transition-colors duration-150 cursor-pointer ${
-                          active
-                            ? 'bg-[#2F6B4F] border-[#2F6B4F] text-white'
-                            : 'bg-white border-[#E6E2D8] text-[#524F49] hover:text-[#1F1E1C]'
-                        }`}
-                      >
-                        {item.label}
-                      </button>
-                    );
-                  })}
-                </div>
+                <p className="rounded-xl border border-[#E6E2D8] bg-white px-3.5 py-3 text-sm text-[#524F49]">
+                  WhatsApp відкриється з готовим текстом. Заявка буде надіслана лише після вашого підтвердження в месенджері.
+                </p>
               </div>
 
               <div>
@@ -259,19 +237,9 @@ export function AdoptionModal({
                 type="submit"
                 className="w-full py-3.5 px-6 min-h-[48px] text-[15px] font-semibold text-white bg-[#2F6B4F] hover:bg-[#24553E] rounded-xl transition-colors duration-150 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2F6B4F]"
               >
-                Надіслати заявку
+                Підготувати заявку в WhatsApp
               </button>
 
-              <div className="pt-2 flex items-center justify-center gap-2 text-[13px] text-[#636059]">
-                <Phone className="w-3.5 h-3.5 text-[#2F6B4F]" aria-hidden="true" />
-                <span>Або телефонуйте щодня з 10:00 до 19:00:</span>
-                <a
-                  href="tel:+380674128930"
-                  className="font-semibold text-[#1F1E1C] hover:text-[#2F6B4F] tabular-nums"
-                >
-                  +38 (067) 412-89-30
-                </a>
-              </div>
             </form>
           </>
         )}
