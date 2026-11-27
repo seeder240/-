@@ -16,7 +16,7 @@ export function AdoptionModal({
   const [selectedPetId, setSelectedPetId] = useState<string>('');
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
-  const [contactChannel, setContactChannel] = useState<'phone' | 'telegram' | 'viber'>('phone');
+  
   const [message, setMessage] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
@@ -58,6 +58,15 @@ export function AdoptionModal({
     }
 
     setError(null);
+    const application = [
+      'Вітаю! Хочу дізнатися про прилаштування тварини.',
+      'Ім’я: ' + trimmedName,
+      'Телефон: ' + phone.trim(),
+      'Тварина: ' + (selectedPet ? selectedPet.name + ' (' + selectedPet.speciesLabel + ')' : 'Порадьте улюбленця'),
+      message.trim() ? 'Коментар: ' + message.trim() : '',
+    ].filter(Boolean).join('\n');
+    const whatsappUrl = 'https://wa.me/380674128930?text=' + encodeURIComponent(application);
+    window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
     setSubmitted(true);
   };
 
@@ -101,13 +110,10 @@ export function AdoptionModal({
               id="adoption-modal-title"
               className="font-serif text-2xl font-semibold text-[#1F1E1C]"
             >
-              Заявку отримано з теплом
+              Заявка готова до надсилання
             </h3>
             <p className="mt-3 text-[15px] leading-[1.65] text-[#524F49]">
-              Дякуємо, {fullName.trim()}!{' '}
-              {selectedPet
-                ? `Координатор притулку зв’яжеться з вами найближчим часом, щоб домовитись про знайомство з ${selectedPet.name}.`
-                : 'Координатор притулку зв’яжеться з вами найближчим часом і допоможе обрати найкращого друга.'}
+              Дякуємо, {fullName.trim()}! Ми відкрили WhatsApp із підготовленим повідомленням. Перевірте його та натисніть «Надіслати», щоб заявка справді надійшла до притулку.
             </p>
             <div className="mt-6 p-4 bg-[#F3F1EC] border border-[#E6E2D8] rounded-xl text-sm text-[#524F49]">
               Якщо хочете зателефонувати прямо зараз:{' '}
@@ -202,34 +208,11 @@ export function AdoptionModal({
 
               <div>
                 <span className="block text-[13px] font-medium text-[#1F1E1C] mb-1.5">
-                  Зручний спосіб зв’язку
+                  Надсилання заявки
                 </span>
-                <div className="grid grid-cols-3 gap-2">
-                  {(
-                    [
-                      { id: 'phone', label: 'Дзвінок' },
-                      { id: 'telegram', label: 'Telegram' },
-                      { id: 'viber', label: 'Viber' },
-                    ] as const
-                  ).map((item) => {
-                    const active = contactChannel === item.id;
-                    return (
-                      <button
-                        key={item.id}
-                        type="button"
-                        onClick={() => setContactChannel(item.id)}
-                        aria-pressed={active}
-                        className={`py-2.5 min-h-[42px] text-xs font-medium rounded-xl border transition-colors duration-150 cursor-pointer ${
-                          active
-                            ? 'bg-[#2F6B4F] border-[#2F6B4F] text-white'
-                            : 'bg-white border-[#E6E2D8] text-[#524F49] hover:text-[#1F1E1C]'
-                        }`}
-                      >
-                        {item.label}
-                      </button>
-                    );
-                  })}
-                </div>
+                <p className="rounded-xl border border-[#E6E2D8] bg-white px-3.5 py-3 text-sm text-[#524F49]">
+                  WhatsApp відкриється з готовим текстом. Заявка буде надіслана лише після вашого підтвердження в месенджері.
+                </p>v>
               </div>
 
               <div>
@@ -259,7 +242,7 @@ export function AdoptionModal({
                 type="submit"
                 className="w-full py-3.5 px-6 min-h-[48px] text-[15px] font-semibold text-white bg-[#2F6B4F] hover:bg-[#24553E] rounded-xl transition-colors duration-150 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2F6B4F]"
               >
-                Надіслати заявку
+                Підготувати заявку в WhatsApp
               </button>
 
               <div className="pt-2 flex items-center justify-center gap-2 text-[13px] text-[#636059]">
