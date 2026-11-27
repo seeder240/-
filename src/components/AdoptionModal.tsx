@@ -52,8 +52,8 @@ export function AdoptionModal({
       return;
     }
 
-    if (digitsCount < 9) {
-      setError('Будь ласка, вкажіть коректний номер телефону для зв’язку.');
+    if (digitsCount < 10 || digitsCount > 15) {
+      setError('Будь ласка, вкажіть номер телефону з 10–15 цифр.');
       return;
     }
 
@@ -66,7 +66,11 @@ export function AdoptionModal({
       message.trim() ? 'Коментар: ' + message.trim() : '',
     ].filter(Boolean).join('\n');
     const whatsappUrl = 'https://wa.me/380674128930?text=' + encodeURIComponent(application);
-    window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+    const whatsappWindow = window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+    if (!whatsappWindow) {
+      setError('Браузер заблокував відкриття WhatsApp. Дозвольте спливаючі вікна або зателефонуйте за номером нижче.');
+      return;
+    }
     setSubmitted(true);
   };
 
